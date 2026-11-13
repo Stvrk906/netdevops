@@ -40,10 +40,9 @@ services:
     restart: unless-stopped
 
   monitoring:
-    image: prom/prometheus:v2.54.1
+    build: ./docker/monitoring
+    image: netdevops/monitoring:1.0
     container_name: monitoring
-    volumes:
-      - ./docker/monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
     networks:
       mgmt-net:
         ipv4_address: 172.20.3.10
@@ -65,14 +64,13 @@ services:
     restart: unless-stopped
 
   grafana:
-    image: grafana/grafana:11.2.0
+    build: ./docker/grafana
+    image: netdevops/grafana:1.0
     container_name: grafana
     environment:
       GF_SECURITY_ADMIN_PASSWORD: ${GF_ADMIN_PASSWORD}
     volumes:
       - grafana-data:/var/lib/grafana
-      - ./docker/grafana/provisioning:/etc/grafana/provisioning:ro
-      - ./docker/grafana/dashboards:/var/lib/grafana/dashboards:ro
     networks:
       mgmt-net:
         ipv4_address: 172.20.3.20
